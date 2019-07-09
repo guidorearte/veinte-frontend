@@ -1,9 +1,41 @@
 import React from 'react';
+import { useState } from "react";
 import {
-    TextField
+    Button,
+    TextField,
+    Checkbox,
+    FormControlLabel
 } from "@material-ui/core";
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles(theme => ({
+    '@global': {
+        body: {
+            backgroundColor: theme.palette.common.white,
+        },
+    },
+    form: {
+        width: '100%', // Fix IE 11 issue.
+        marginTop: theme.spacing(1),
+    },
+    submit: {
+        margin: theme.spacing(3, 0, 2),
+    },
+}));
 
 export default function LoginForm(props) {
+
+    const classes = useStyles();
+    const [loginForm, setLoginForm] = useState({
+        username: {
+            value: '',
+            error: false
+        },
+        password: {
+            value: '',
+            error: false
+        }
+    });
 
     const handleInputChange = (event) => {
         event.persist(); // https://fb.me/react-event-pooling
@@ -11,32 +43,61 @@ export default function LoginForm(props) {
             value: event.target.value,
             error: false, // validate
         };
-        props.onChange(event.target.name, newValue);
+        setLoginForm(loginForm => ({
+            ...loginForm,
+            [event.target.name]: newValue
+        }));
+    }
+
+    const handleOnClickButton = () => {
+        props.onChange(loginForm);
     }
 
     return (
-        <form>
+        <div>
             <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                autoComplete="username"
                 autoFocus
-                error={props.form.username.error}
-                margin="dense"
+                error={loginForm.username.error}
                 id="username"
                 name="username"
                 label="Username"
-                type="text"
                 onChange={handleInputChange}
-                value={props.form.username.value}
+                value={loginForm.username.value}
             />
             <TextField
-                error={props.form.password.error}
-                margin="dense"
-                id="password"
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
                 name="password"
                 label="Password"
                 type="password"
+                id="password"
+                autoComplete="current-password"
+                error={loginForm.password.error}
                 onChange={handleInputChange}
-                value={props.form.password.value}
+                value={loginForm.password.value}
             />
-        </form>
+            <FormControlLabel
+                // TODO implement
+                control={<Checkbox value="remember" color="primary" />}
+                label="Remember me"
+            />
+            <Button
+                type="button"
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+                onClick={handleOnClickButton}
+            >
+                Sign In
+            </Button>
+        </div>
     );
 }

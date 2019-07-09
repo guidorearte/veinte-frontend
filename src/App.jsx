@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter, Route } from "react-router-dom";
-import Landing from "./components/landing/Landing";
+import Login from "./components/login/Login";
 import Dashboard from './components/dashboard/Dashboard';
 
 function App() {
@@ -15,7 +15,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Route path="/" exact component={Landing} />
+      <Route path="/" exact component={Login} />
       <Route path="/dashboard" component={Dashboard} />
     </BrowserRouter>
   );
