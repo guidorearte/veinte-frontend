@@ -3,6 +3,7 @@ import './App.css';
 import { BrowserRouter, Route } from "react-router-dom";
 import Login from "./components/login/Login";
 import Dashboard from './components/dashboard/Dashboard';
+import UserDash from './components/user/UserDash';
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
     <BrowserRouter>
       <Route path="/" exact component={Login} />
       <Route path="/dashboard" component={Dashboard} />
+      <Route path="/userdash" component={UserDash} />
     </BrowserRouter>
   );
 }
