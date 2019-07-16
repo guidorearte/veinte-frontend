@@ -55,7 +55,23 @@ export default function RegisterForm(props) {
     }
 
     const handleOnClickButton = () => {
-        props.onChange(form);
+        const formValues = Object.assign({}, form);
+        props.onChange(formValues).then(() => {
+            setForm({
+                username: {
+                    value: '',
+                    error: false
+                },
+                password: {
+                    value: '',
+                    error: false
+                },
+                confirmPassword: {
+                    value: '',
+                    error: false
+                }
+            });
+        });
     }
 
     return (
