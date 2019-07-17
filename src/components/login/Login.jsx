@@ -63,7 +63,9 @@ export default function Login(props) {
             const response = await axios.post(window.APIS.LOGIN, body);
             axios.defaults.headers.common['x-access-token'] = response.data.token;
             localStorage.setItem('token', response.data.token);
-            props.history.push('/dashboard');
+            // FIXME: change this to response.data.user.role once the backend endpoint is changed
+            localStorage.setItem('role', 'user');
+            props.history.push('/app/dashboard');
         } catch (error) {
             setAlert({
                 show: true,
@@ -80,10 +82,11 @@ export default function Login(props) {
             confirmPassword: form.confirmPassword.value
         }
         try {
-            const response = await axios.post(window.APIS.REGISTER, body);
-            axios.defaults.headers.common['x-access-token'] = response.data.token;
-            localStorage.setItem('token', response.data.token);
-            props.history.push('/dashboard');
+            await axios.post(window.APIS.REGISTER, body);
+            setAlert({
+                show: true,
+                msg: { title: 'Usuario registrado exitosamente. Recibirás un correo para validar la cuenta.' , description: ''}
+            });
         } catch (error) {
             setAlert({
                 show: true,

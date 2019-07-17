@@ -37,7 +37,7 @@ export default function ComponentContainer(props) {
         <main className={classes.content}>
             <div className={classes.appBarSpacer} />
             <Container maxWidth="lg" className={classes.container}>
-                <Route path="/dashboard#transaction" render={(props) =>
+                <Route path="/app/dashboard#transaction" render={(props) =>
                     <Transaction></Transaction>
                     } />
             </Container>

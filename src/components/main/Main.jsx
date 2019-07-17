@@ -1,5 +1,4 @@
-import React, { Fragment } from 'react';
-import  { HashRouter, Redirect } from 'react-router-dom'
+import React from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -10,8 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import ComponentContainer from '../container/Container';
-import Sidebar from '../sidebar/Sidebar';
+import Sidebar from '../common/sidebar/Sidebar';
 
 const drawerWidth = 240;
 
@@ -65,6 +63,10 @@ const useStyles = makeStyles(theme => ({
   fixedHeight: {
     height: 240,
   },
+  childContainer: {
+    width: '100%',
+    marginTop: '65px'
+  }
 }));
 
 export default function Main(props) {
@@ -75,18 +77,18 @@ export default function Main(props) {
     setOpen(true);
   };
 
-  const checkToken = (token) => {
-    // @TODO verificacion de token
-    return true;
-  }
+  // const checkToken = (token) => {
+  //   // @TODO verificacion de token
+  //   return true;
+  // }
 
-  if (!(localStorage.getItem('token') && checkToken(localStorage.getItem('token')))) {
-    return <Redirect to='/'  />
-  }
+  // if (!(localStorage.getItem('token') && checkToken(localStorage.getItem('token')))) {
+  //   return <Redirect to='/app/'  />
+  // }
 
   const handleOnClick = () => {
     localStorage.removeItem('token');
-    props.history.push('/');
+    props.history.push('/app/');
   }
   const handleDrawerClose = (open) => {
     setOpen(open);
@@ -117,11 +119,9 @@ export default function Main(props) {
         </Toolbar>
       </AppBar>
       <Sidebar open={open} setOpen={handleDrawerClose} onClick={handleOnClick}></Sidebar>
-      <HashRouter hashType="noslash">
-          <Fragment>
-              <ComponentContainer></ComponentContainer>
-          </Fragment>
-      </HashRouter>
+      <div className={classes.childContainer}>
+        {props.children}
+      </div> 
     </div>
   );
 }
