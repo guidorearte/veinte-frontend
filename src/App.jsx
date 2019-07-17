@@ -2,10 +2,8 @@ import React from 'react';
 import './App.css';
 import { BrowserRouter, Route, Redirect } from "react-router-dom";
 import Login from "./components/login/Login";
-// import Dashboard from './components/dashboard/Dashboard';
-// import UserDash from './components/user/UserDash';
-import Main from './components/main/Main';
 import AuthenticationWrapper from './components/common/AuthenticationWrapper';
+import DashboardContainer from './containers/DashboardContainer';
 
 function App() {
 
@@ -16,15 +14,16 @@ function App() {
     REGISTER: baseURL + '/register',
   };
 
-  const checkAuth = (component, needsAuthentication) => (
+  const checkAuth = (routerProps, component, needsAuthentication) => (
     AuthenticationWrapper({
+      routerProps,
       component,
       needsAuthentication
     })
   );
 
-  const WrappedLogin = (props) => checkAuth(<Login {...props} />, false);
-  const WrappedDashboard = (props) => checkAuth(<Main {...props} />, true);
+  const WrappedLogin = (props) => checkAuth(props, <Login {...props} />, false);
+  const WrappedDashboard = (props) => checkAuth(props, <DashboardContainer {...props} />, true);
 
   return (
     <BrowserRouter>

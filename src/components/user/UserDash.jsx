@@ -26,7 +26,6 @@ import Select from '@material-ui/core/Select';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    marginTop: 100,
     width: '100%',
     overflowX: 'auto',
   },
@@ -43,9 +42,6 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
     minWidth: 260,
     maxWidth: 220
-  },
-  container: {
-    width: '100%'
   }
 }));
 
@@ -128,7 +124,7 @@ export default function UserDash(props) {
   const classes = useStyles();
 
   return (
-    <div className={classes.container}>
+    <div>
       <Dialog open={open} onClose={() => handleClose(() => setOpen())} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">{modal.description} - {modal.name}</DialogTitle>
         <DialogContent>
