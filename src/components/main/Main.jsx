@@ -11,7 +11,7 @@ import Badge from '@material-ui/core/Badge';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import ComponentContainer from '../container/Container';
-import Sidebar from '../sidebar/Sidebar';
+import Sidebar from '../common/sidebar/Sidebar';
 import UserDash from '../user/UserDash';
 
 const drawerWidth = 240;
@@ -76,14 +76,14 @@ export default function Main(props) {
     setOpen(true);
   };
 
-  const checkToken = (token) => {
-    // @TODO verificacion de token
-    return true;
-  }
+  // const checkToken = (token) => {
+  //   // @TODO verificacion de token
+  //   return true;
+  // }
 
-  if (!(localStorage.getItem('token') && checkToken(localStorage.getItem('token')))) {
-    return <Redirect to='/app/'  />
-  }
+  // if (!(localStorage.getItem('token') && checkToken(localStorage.getItem('token')))) {
+  //   return <Redirect to='/app/'  />
+  // }
 
   const handleOnClick = () => {
     localStorage.removeItem('token');

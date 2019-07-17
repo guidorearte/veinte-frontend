@@ -111,15 +111,6 @@ export default function Dashboard(props) {
     setOpen(true);
   };
 
-  const checkToken = (token) => {
-    // @TODO verificacion de token
-    return true;
-  }
-
-  if (!(localStorage.getItem('token') && checkToken(localStorage.getItem('token')))) {
-    return <Redirect to='/app/'  />
-  }
-
   const handleOnClick = () => {
     localStorage.removeItem('token');
     props.history.push('/');
