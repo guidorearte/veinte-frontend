@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Redirect } from "react-router-dom";
 import Login from "./components/login/Login";
 import AuthenticationWrapper from './components/common/AuthenticationWrapper';
 import DashboardContainer from './containers/DashboardContainer';
+import Change from './components/change/Change';
 
 function App() {
 
@@ -24,12 +25,14 @@ function App() {
 
   const WrappedLogin = (props) => checkAuth(props, <Login {...props} />, false);
   const WrappedDashboard = (props) => checkAuth(props, <DashboardContainer {...props} />, true);
+  const WrappedChange = (props) => checkAuth(props, <Change {...props} />, true);
 
   return (
     <BrowserRouter>
       <Redirect from="/" to="/app" />
-    <Route path="/app/" name="login" exact component={WrappedLogin} />
+      <Route path="/app/" name="login" exact component={WrappedLogin} />
       <Route path="/app/dashboard/" name="dash" component={WrappedDashboard} />
+      <Route path="/app/change" name="change" component={WrappedChange} />
     </BrowserRouter>
   );
 }
