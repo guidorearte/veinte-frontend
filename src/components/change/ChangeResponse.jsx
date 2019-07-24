@@ -7,32 +7,34 @@ import Grid from '@material-ui/core/Grid';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 
-export default function ChangeConfirmation(props) {
+export default function ChangeResponse(props) {
+
+  let title = '';
+  let body = '';
+
+  if (props.response.status === 200) {
+    title = 'Operación Exitosa';
+    body = 'En el Dashboard podrá encontrar su balance actualizado';
+  } else {
+    title = 'Error';
+    body = props.response.data;
+  }
 
   return (
-    <Dialog open={props.openChangeConfirmation} onClose={props.handleClose} aria-labelledby="form-dialog-title">
-      <DialogTitle id="form-dialog-title">Confirmación</DialogTitle>
+    <Dialog open={props.openChangeResponse} onClose={props.handleClose} aria-labelledby="form-dialog-title">
+      <DialogTitle id="form-dialog-title">{title}</DialogTitle>
       <DialogContent>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <DialogContentText>
-              Cantidad: {props.amount + ' ' + props.coin}
-            </DialogContentText>  
-            <DialogContentText>
-              ¿Desea confirmar la operación?
+              {body}
             </DialogContentText>  
           </Grid>
         </Grid>
       </DialogContent>
       <DialogActions>
         <Button onClick={props.handleClose} color="primary">
-          CANCELAR
-        </Button>
-        <Button onClick={() => {
-          props.handleClose();
-          props.confirmChange();
-        }} color="primary">
-          CONFIRMAR
+          CERRAR
         </Button>
       </DialogActions>
     </Dialog>

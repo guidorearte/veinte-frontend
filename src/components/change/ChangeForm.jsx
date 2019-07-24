@@ -43,7 +43,7 @@ export default function ChangeForm(props) {
               >
                 {
                   props.coins.map((coin, index) => (
-                    <MenuItem key={index} value={coin.coinId}>{coin.prefix}</MenuItem>
+                    <MenuItem key={index} value={coin._id}>{coin.prefix}</MenuItem>
                   ))
                 }
               </Select>
@@ -76,7 +76,7 @@ export default function ChangeForm(props) {
               >
                 {
                   props.coins.map((coin, index) => (
-                    <MenuItem key={index} value={coin.coinId}>{coin.prefix}</MenuItem>
+                    <MenuItem key={index} value={coin._id}>{coin.prefix}</MenuItem>
                   ))
                 }
               </Select>

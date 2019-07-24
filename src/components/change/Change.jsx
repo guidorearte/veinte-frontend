@@ -2,45 +2,44 @@ import React from 'react';
 import { Grid, Button } from '@material-ui/core';
 import ChangeForm from './ChangeForm';
 import ChangeConfirmation from './ChangeConfirmation';
+import ChangeResponse from './ChangeResponse';
 
-const coins = [
-  {
-    coinId: '1',
-    prefix: 'USD'
-  },
-  {
-    coinId: '2',
-    prefix: 'BS',
-    buyRate: 22,
-    sellRate: 20
-  },
-  {
-    coinId: '3',
-    prefix: 'BTC',
-    buyRate: 10000,
-    sellRate: 9900
-  }
-]
-
-function calculateChangeValue(value, fromCoinId, toCoinId) {
+function calculateChangeValue(coins, value, fromCoinId, toCoinId) {
   if (value === "") return 0;
   if (fromCoinId === toCoinId) return value;
-  const fromCoin = coins.find(coin => coin.coinId === fromCoinId);
-  const toCoin = coins.find(coin => coin.coinId === toCoinId);
-  const baseCoinAmount = value * (fromCoin.buyRate || 1);
-  return baseCoinAmount / (toCoin.sellRate || 1);
+  const fromCoin = coins.find(coin => coin._id === fromCoinId);
+  const toCoin = coins.find(coin => coin._id === toCoinId);
+  const baseCoinAmount = value / (fromCoin.buyRate || 1);
+  return baseCoinAmount * (toCoin.sellRate || 1);
 }
 
 export default function Change(props) {
 
   const [openChangeConfirmation, setOpenChangeConfirmation] = React.useState(false);
+  const [openChangeResponse, setOpenChangeResponse] = React.useState(false);
 
   const [values, setValues] = React.useState({
-    fromCoinId: '1',
-    toCoinId: '1',
+    fromCoinId: '',
+    toCoinId: '',
     amountFrom: 0,
     amountTo: 0
   });
+
+  React.useEffect(() => {
+    if (props.coins.length > 0) {
+      setValues(oldValues => ({
+        ...oldValues,
+        fromCoinId: props.coins[0]._id,
+        toCoinId: props.coins[0]._id
+      }));
+    }
+  }, [props.coins]);
+
+  React.useEffect(() => {
+    if (Object.keys(props.response).length !== 0) {
+      setOpenChangeResponse(true);
+    }
+  }, [props.response]);
 
   function handleClose() {
     setOpenChangeConfirmation(false);
@@ -51,7 +50,7 @@ export default function Change(props) {
     const newValues = Object.assign({}, values);
     newValues[event.target.name] = event.target.value;
     if (values.amountFrom !== 0) {
-      changeValue = calculateChangeValue(values.amountFrom, newValues.fromCoinId, newValues.toCoinId);
+      changeValue = calculateChangeValue(props.coins, values.amountFrom, newValues.fromCoinId, newValues.toCoinId);
     }
     setValues(oldValues => ({
       ...oldValues,
@@ -64,7 +63,7 @@ export default function Change(props) {
     const changeInputName = event.target.name;
     const value = event.target.value !== "" ? parseFloat(event.target.value) : 0;
     const changeOutputName = ['amountFrom', 'amountTo'].find(name => name !== event.target.name);
-    const changeValue = calculateChangeValue(event.target.value, values.fromCoinId, values.toCoinId);
+    const changeValue = calculateChangeValue(props.coins, event.target.value, values.fromCoinId, values.toCoinId);
     setValues(oldValues => ({
       ...oldValues,
       [changeOutputName]: parseFloat(changeValue),
@@ -75,7 +74,7 @@ export default function Change(props) {
   function onClickSwapButton() {
     let changeValue = values.amountTo;
     if (values.amountFrom !== 0) {
-      changeValue = calculateChangeValue(values.amountFrom, values.toCoinId, values.fromCoinId);
+      changeValue = calculateChangeValue(props.coins, values.amountFrom, values.toCoinId, values.fromCoinId);
     }
     const newFromCoinId = values.toCoinId;
     const toCoinId = values.fromCoinId;
@@ -88,8 +87,8 @@ export default function Change(props) {
   }
 
   function getCoinPrefix() {
-    const coin = coins.find(coin => coin.coinId === values.toCoinId);
-    return coin.prefix;
+    const coin = props.coins.find(coin => coin._id === values.toCoinId);
+    return coin ? coin.prefix : '';
   }
 
   function disableButton() {
@@ -98,14 +97,20 @@ export default function Change(props) {
 
   return (
     <div>
+      <ChangeResponse
+        openChangeResponse={openChangeResponse}
+        handleClose={() => setOpenChangeResponse(false)}
+        response={props.response}
+      />
       <ChangeConfirmation
         openChangeConfirmation={openChangeConfirmation}
         handleClose={handleClose}
         amount={values.amountTo}
         coin={getCoinPrefix()}
+        confirmChange={() => props.confirmChange(values)}
       />
       <ChangeForm
-        coins={coins}
+        coins={props.coins}
         handleSelectChange={handleSelectChange}
         handleInputChange={handleInputChange}
         onClickSwapButton={onClickSwapButton}
