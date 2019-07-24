@@ -1,6 +1,7 @@
 import React from 'react';
 import { Grid, Button } from '@material-ui/core';
 import ChangeForm from './ChangeForm';
+import ChangeConfirmation from './ChangeConfirmation';
 
 const coins = [
   {
@@ -32,12 +33,18 @@ function calculateChangeValue(value, fromCoinId, toCoinId) {
 
 export default function Change(props) {
 
+  const [openChangeConfirmation, setOpenChangeConfirmation] = React.useState(false);
+
   const [values, setValues] = React.useState({
     fromCoinId: '1',
     toCoinId: '1',
     amountFrom: 0,
     amountTo: 0
   });
+
+  function handleClose() {
+    setOpenChangeConfirmation(false);
+  }
 
   function handleSelectChange(event) {
     let changeValue = values.amountTo;
@@ -80,8 +87,23 @@ export default function Change(props) {
     }));
   }
 
+  function getCoinPrefix() {
+    const coin = coins.find(coin => coin.coinId === values.toCoinId);
+    return coin.prefix;
+  }
+
+  function disableButton() {
+    return values.amountTo === 0 || values.amountTo === values.amountFrom;
+  }
+
   return (
     <div>
+      <ChangeConfirmation
+        openChangeConfirmation={openChangeConfirmation}
+        handleClose={handleClose}
+        amount={values.amountTo}
+        coin={getCoinPrefix()}
+      />
       <ChangeForm
         coins={coins}
         handleSelectChange={handleSelectChange}
@@ -91,7 +113,11 @@ export default function Change(props) {
       /> 
       <Grid container >
         <Grid item xs={12}>
-          <Button onClick={() => {}} color="primary">
+          <Button
+            disabled={disableButton()}
+            onClick={() => setOpenChangeConfirmation(true)}
+            color="primary"
+          >
             CAMBIAR
           </Button>
         </Grid>
