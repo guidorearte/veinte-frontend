@@ -27,6 +27,8 @@ function App() {
   const WrappedLogin = props => checkAuth(props, <Login {...props} />, false);
   const WrappedDashboard = props =>
     checkAuth(props, <DashboardContainer {...props} />, true);
+  const WrappedUserTransactions = props =>
+    checkAuth(props, <UserTransactions {...props} />, true);
 
   return (
     <BrowserRouter>
@@ -34,7 +36,7 @@ function App() {
       <Route path="/app/" name="login" exact component={WrappedLogin} />
       <Route path="/app/dashboard/" name="dash" component={WrappedDashboard} />
       <Route
-        path="/app/transactions"
+        path="/app/transactions/"
         name="transactions"
         component={UserTransactions}
       />
