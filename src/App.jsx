@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import { BrowserRouter, Route, Redirect } from "react-router-dom";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Login from "./components/login/Login";
 import AuthenticationWrapper from "./components/common/AuthenticationWrapper";
 import DashboardContainer from "./containers/DashboardContainer";
@@ -32,14 +32,19 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Redirect from="/" to="/app" />
-      <Route path="/app/" name="login" exact component={WrappedLogin} />
-      <Route path="/app/dashboard/" name="dash" component={WrappedDashboard} />
-      <Route
-        path="/app/transactions/"
-        name="transactions"
-        component={UserTransactions}
-      />
+      <Switch>
+        <Route path="/app/" name="login" exact component={WrappedLogin} />
+        <Route
+          path="/app/dashboard/"
+          name="dash"
+          component={WrappedDashboard}
+        />
+        <Route
+          path="/app/transactions/"
+          name="transactions"
+          component={WrappedUserTransactions}
+        />
+      </Switch>
     </BrowserRouter>
   );
 }
