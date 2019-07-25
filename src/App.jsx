@@ -2,8 +2,9 @@ import React from "react";
 import "./App.css";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Login from "./components/login/Login";
-import AuthenticationWrapper from "./components/common/AuthenticationWrapper";
-import DashboardContainer from "./containers/DashboardContainer";
+import AuthenticationWrapper from './components/common/AuthenticationWrapper';
+import DashboardContainer from './containers/DashboardContainer';
+import ChangeContainer from './containers/ChangeContainer';
 import UserTransactions from "./components/transactions/UserTransactions";
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
       needsAuthentication
     });
 
+  const WrappedChange = props => checkAuth(props, <ChangeContainer {...props} />, true);
   const WrappedLogin = props => checkAuth(props, <Login {...props} />, false);
   const WrappedDashboard = props =>
     checkAuth(props, <DashboardContainer {...props} />, true);
@@ -44,6 +46,7 @@ function App() {
           name="transactions"
           component={WrappedUserTransactions}
         />
+         <Route path="/app/change" name="change" component={WrappedChange} />
       </Switch>
     </BrowserRouter>
   );
