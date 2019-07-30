@@ -32,7 +32,7 @@ export default function TableUser(props) {
       createData('ETH', 0, 229.46, 'crypto'),
     ];
 
-    
+
 
       return(
         <Paper className={props.classes.root} modal={props.modal} setModal = { props.setModal}>

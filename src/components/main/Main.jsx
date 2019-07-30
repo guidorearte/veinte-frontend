@@ -10,15 +10,22 @@ import Badge from '@material-ui/core/Badge';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Sidebar from '../common/sidebar/Sidebar';
+import AccordionPrices from './AccordionPrices';
+import './accordion.css';
+
+
+
 
 const drawerWidth = 240;
+
 
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
   },
   toolbar: {
-    paddingRight: 24, // keep right padding when drawer closed
+    paddingRight: 24, // keep right padding when drawer closed,
+
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
@@ -66,8 +73,13 @@ const useStyles = makeStyles(theme => ({
   childContainer: {
     width: '100%',
     marginTop: '65px'
-  }
+  },
+
 }));
+
+
+
+
 
 export default function Main(props) {
 
@@ -92,9 +104,20 @@ export default function Main(props) {
   }
   const handleDrawerClose = (open) => {
     setOpen(open);
-  };
+  }
 
+
+//  const onChange = () => {
+//  "allowZeroExpanded": "true";
+// }
+
+//function onChange() {
+//        this.setState(state => {
+//           "allowZeroExpanded", true;
+//       });
+//    }
   return (
+
     <div className={classes.root}>
       <CssBaseline />
       <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
@@ -111,17 +134,22 @@ export default function Main(props) {
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
             Dashboard
           </Typography>
+
+          <AccordionPrices/>
+
           <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">
               <NotificationsIcon />
             </Badge>
+
           </IconButton>
+
         </Toolbar>
       </AppBar>
       <Sidebar open={open} setOpen={handleDrawerClose} onClick={handleOnClick}></Sidebar>
       <div className={classes.childContainer}>
         {props.children}
-      </div> 
+      </div>
     </div>
   );
 }
