@@ -11,8 +11,6 @@ import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Sidebar from '../common/sidebar/Sidebar';
 import AccordionPrices from './AccordionPrices';
-import './accordion.css';
-
 
 
 
