@@ -26,6 +26,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function RegisterForm(props) {
   const classes = useStyles();
+  const [pristine, setPristine] = useState(true);
   const [form, setForm] = useState({
     email: {
       value: "",
@@ -41,40 +42,79 @@ export default function RegisterForm(props) {
     }
   });
 
+  const isInvalid =
+    pristine ||
+    Object.values(form)
+      .map(field => field.error)
+      .some(value => value === true);
+
+  const validPasswordRegex = RegExp(
+    /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$/
+  );
+  const validEmailRegex = RegExp(
+    /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
+  );
+
+  const handleInputBlur = event => {
+    event.persist();
+    let newValue;
+    if (event.target.name === "email") {
+      newValue = {
+        value: event.target.value,
+        error: !validEmailRegex.test(event.target.value)
+      };
+    } else if (event.target.name === "password") {
+      newValue = {
+        value: event.target.value,
+        error: !validPasswordRegex.test(event.target.value)
+      };
+    } else {
+      newValue = {
+        value: event.target.value,
+        error: !(form.password.value === event.target.value)
+      };
+    }
+
+    setForm(form => ({
+      ...form,
+      [event.target.name]: newValue
+    }));
+    setPristine(false);
+  };
+
   const handleInputChange = event => {
     event.persist(); // https://fb.me/react-event-pooling
-    const newValue = {
-      value: event.target.value,
-      error: false // validate
-    };
+    let newValue;
+    if (event.target.name === "email") {
+      newValue = {
+        value: event.target.value
+        //error: !validEmailRegex.test(event.target.value)
+      };
+    } else if (event.target.name === "password") {
+      newValue = {
+        value: event.target.value
+        //error: !validPasswordRegex.test(event.target.value)
+      };
+    } else {
+      newValue = {
+        value: event.target.value
+        // error: !(form.password.value === event.target.value)
+      };
+    }
     setForm(form => ({
       ...form,
       [event.target.name]: newValue
     }));
   };
 
-  const handleOnClickButton = () => {
-    const formValues = Object.assign({}, form);
-    props.onChange(formValues).then(() => {
-      setForm({
-        username: {
-          value: "",
-          error: false
-        },
-        password: {
-          value: "",
-          error: false
-        },
-        confirmPassword: {
-          value: "",
-          error: false
-        }
-      });
-    });
+  const handleSubmit = event => {
+    event.preventDefault();
+
+    !isInvalid && props.onChange(form);
   };
 
   return (
-    <div className={classes.form} noValidate>
+    <form className={classes.form} noValidate>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <TextField
@@ -83,12 +123,17 @@ export default function RegisterForm(props) {
             required
             fullWidth
             autoFocus
+            error={form.email.error}
             id="email"
             name="email"
             label="Email"
             onChange={handleInputChange}
             value={form.email.value}
+            onBlur={handleInputBlur}
           />
+          {form.email.error && (
+            <h4 style={{ color: "red" }}>Please insert a valid email</h4>
+          )}
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -99,10 +144,18 @@ export default function RegisterForm(props) {
             label="Password"
             type="password"
             id="password"
+            error={form.password.error}
             autoComplete="current-password"
             onChange={handleInputChange}
             value={form.password.value}
+            onBlur={handleInputBlur}
           />
+          {form.password.error && (
+            <h4 style={{ color: "red" }}>
+              Password may have at least one upper case letter, one number and
+              one lower case letter, and 8 characters minimum
+            </h4>
+          )}
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -113,9 +166,14 @@ export default function RegisterForm(props) {
             name="confirmPassword"
             label="Confirm Password"
             type="password"
+            error={form.confirmPassword.error}
             onChange={handleInputChange}
             value={form.confirmPassword.value}
+            onBlur={handleInputBlur}
           />
+          {form.confirmPassword.error && (
+            <h4 style={{ color: "red" }}>Password Confirm do not match</h4>
+          )}
         </Grid>
         <Grid item xs={12}>
           <FormControlLabel
@@ -125,15 +183,15 @@ export default function RegisterForm(props) {
         </Grid>
       </Grid>
       <Button
-        type="button"
+        type="submit"
         fullWidth
         variant="contained"
         color="primary"
         className={classes.submit}
-        onClick={handleOnClickButton}
+        disabled={isInvalid}
       >
         Sign Up
       </Button>
-    </div>
+    </form>
   );
 }

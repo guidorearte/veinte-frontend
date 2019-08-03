@@ -7,10 +7,6 @@ import {
   FormControlLabel
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { Formik } from "formik";
-import * as EmailValidator from "email-validator";
-import * as Yup from "yup";
-import "./validation.css";
 
 const useStyles = makeStyles(theme => ({
   "@global": {
@@ -29,6 +25,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function LoginForm(props) {
   const classes = useStyles();
+  const [pristine, setPristine] = useState(true);
   const [loginForm, setLoginForm] = useState({
     email: {
       value: "",
@@ -39,176 +36,123 @@ export default function LoginForm(props) {
       error: false
     }
   });
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [mailValidation, setMailValidation] = useState(false);
+
+  const isInvalid =
+    pristine ||
+    Object.values(loginForm)
+      .map(field => field.error)
+      .some(value => value === true);
+
+  const validPasswordRegex = RegExp(
+    /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$/
+  );
+  const validEmailRegex = RegExp(
+    /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
+  );
+  const handleInputBlur = event => {
+    event.persist();
+    let newValue;
+
+    if (event.target.name === "email") {
+      newValue = {
+        value: event.target.value,
+        error: !validEmailRegex.test(event.target.value)
+      };
+    } else {
+      newValue = {
+        value: event.target.value,
+        error: !validPasswordRegex.test(event.target.value)
+      };
+    }
+
+    setLoginForm(loginForm => ({
+      ...loginForm,
+      [event.target.name]: newValue
+    }));
+    setPristine(false);
+  };
 
   const handleInputChange = event => {
     event.persist(); // https://fb.me/react-event-pooling
-    const newValue = {
-      value: event.target.value,
-      error: validateEmail(event.target.value) // validate
-    };
+    let newValue;
+    if (event.target.name === "email") {
+      newValue = {
+        value: event.target.value
+      };
+    } else {
+      newValue = {
+        value: event.target.value
+      };
+    }
+
     setLoginForm(loginForm => ({
       ...loginForm,
       [event.target.name]: newValue
     }));
   };
 
-  const handleOnClickButton = () => {
-    props.onChange(loginForm);
-  };
-  const handleEmail = event => {
-    setEmail(event.target.value);
-    setMailValidation(validateEmail(event.target.value));
+  const handleSubmit = event => {
+    event.preventDefault();
 
-    console.log(validateEmail(event.target.value));
-  };
-  const handlePassword = event => {
-    setPassword(event.target.value);
-    validatePassword(event.target.value);
+    !isInvalid && props.onChange(loginForm);
   };
 
-  const validateEmail = email => {
-    const validEmailRegex = RegExp(
-      /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
-    );
-    return validEmailRegex.test(String(email).toLowerCase());
-  };
-  const validatePassword = password => {
-    const regex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$/;
-    return regex.test(String(password));
-  };
   return (
-    <Formik
-      initialValues={{ email: "", password: "" }}
-      onSubmit={(values, { setSubmitting }) => {
-        console.log("Submiting");
-      }}
-      //   validate={values => {
-      //     let errors = {};
-      //     if (!values.email) {
-      //       errors.email = "Required";
-      //     } else if (!EmailValidator.validate(values.email)) {
-      //       errors.email = "Invalid Email Address";
-      //     }
-      //     const passwordRegex = /(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])/;
-      //     if (!values.password) {
-      //       errors.password = "Required";
-      //     } else if (values.password.length < 8) {
-      //       errors.password = "Password must be at least 8 characters long.";
-      //     } else if (!passwordRegex.test(values.password)) {
-      //       errors.password =
-      //         "Invalid password. It must contain at least one number, one upper case letter and one lower case letter";
-      //     }
-      //     return errors;
-      //   }}
-      //********Handling validation messages yourself*******/
-      // validate={values => {
-      //   let errors = {};
-      //   if (!values.email) {
-      //     errors.email = "Required";
-      //   } else if (!EmailValidator.validate(values.email)) {
-      //     errors.email = "Invalid email address";
-      //   }
-
-      //   const passwordRegex = /(?=.*[0-9])/;
-      //   if (!values.password) {
-      //     errors.password = "Required";
-      //   } else if (values.password.length < 8) {
-      //     errors.password = "Password must be 8 characters long.";
-      //   } else if (!passwordRegex.test(values.password)) {
-      //     errors.password = "Invalida password. Must contain one number";
-      //   }
-
-      //   return errors;
-      // }}
-      //********Using Yum for validation********/
-
-      validationSchema={Yup.object().shape({
-        email: Yup.string()
-          .email()
-          .required("Required"),
-        password: Yup.string()
-          .required("No password provided.")
-          .min(8, "Password is too short - should be 8 chars minimum.")
-          .matches(
-            /(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])/,
-            "Password must at least contain a number, an upper case letter and a lower case letter."
-          )
-      })}
-    >
-      {props => {
-        const {
-          values,
-          touched,
-          errors,
-          isSubmitting,
-          handleChange,
-          handleBlur,
-          handleSubmit
-        } = props;
-        return (
-          <form onSubmit={handleSubmit}>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              autoComplete="email"
-              autoFocus
-              // error={!mailValidation}
-              id="email"
-              name="email"
-              label="Email"
-              onChange={handleChange}
-              onblur={handleBlur}
-              value={values.email}
-              className={errors.email && touched.email && "error"}
-            />
-
-            {errors.email && touched.email && (
-              <div className="input-feedback">{errors.email}</div>
-            )}
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              //error={validatePassword}
-              className={errors.email && touched.email && "error"}
-              onChange={handleChange}
-              onblur={handleBlur}
-              value={values.password}
-            />
-            {errors.password && touched.password && (
-              <div className="input-feedback">{errors.password}</div>
-            )}
-
-            <FormControlLabel
-              // TODO implement
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              disabled={isSubmitting}
-              className={classes.submit}
-              //   onClick={handleOnClickButton}
-            >
-              Sign In
-            </Button>
-          </form>
-        );
-      }}
-    </Formik>
+    <form onSubmit={handleSubmit}>
+      <TextField
+        variant="outlined"
+        margin="normal"
+        required
+        fullWidth
+        autoComplete="email"
+        autoFocus
+        error={loginForm.email.error}
+        id="email"
+        name="email"
+        label="Email"
+        onChange={handleInputChange}
+        value={loginForm.email.value}
+        onBlur={handleInputBlur}
+      />
+      {loginForm.email.error && (
+        <h4 style={{ color: "red" }}>Please insert a valid email</h4>
+      )}
+      <TextField
+        variant="outlined"
+        margin="normal"
+        required
+        fullWidth
+        name="password"
+        label="Password"
+        type="password"
+        id="password"
+        autoComplete="current-password"
+        error={loginForm.password.error}
+        onChange={handleInputChange}
+        value={loginForm.password.value}
+        onBlur={handleInputBlur}
+      />
+      {loginForm.password.error && (
+        <h4 style={{ color: "red" }}>
+          Password may have at least one upper case letter, one number and one
+          lower case letter, and 8 characters minimum
+        </h4>
+      )}
+      <FormControlLabel
+        // TODO implement
+        control={<Checkbox value="remember" color="primary" />}
+        label="Remember me"
+      />
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        color="primary"
+        className={classes.submit}
+        disabled={isInvalid}
+      >
+        Sign In
+      </Button>
+    </form>
   );
 }
