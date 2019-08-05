@@ -81,12 +81,14 @@ export default function Sidebar(props) {
             </div>
             <Divider />
             <List>
-                <ListItem button>
-                    <ListItemIcon>
-                        <DashboardIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Dashboard" />
-                </ListItem>
+                <Link to={'/app/dashboard'}>
+                    <ListItem button>
+                        <ListItemIcon>
+                            <DashboardIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Dashboard" />
+                    </ListItem>
+                </Link>
                 <ListItem button>
                     <ListItemIcon>
                         <PeopleIcon />
@@ -99,12 +101,14 @@ export default function Sidebar(props) {
                     </ListItemIcon>
                     <ListItemText primary="Transacciones" />
                 </ListItem>
-                <ListItem button onClick={onClickTransaction}>
-                    <ListItemIcon>
-                        <ShoppingCartIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Compra/Venta" />
-                </ListItem>
+                <Link to={'/app/change'}>
+                    <ListItem button>
+                        <ListItemIcon>
+                            <ShoppingCartIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Compra/Venta" />
+                    </ListItem>
+                </Link>
             </List>
             <Divider />
             <List>
