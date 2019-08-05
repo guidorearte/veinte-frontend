@@ -10,6 +10,14 @@ import Badge from '@material-ui/core/Badge';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Sidebar from '../common/sidebar/Sidebar';
+//import AccordionPrices from './AccordionPrices';
+import {
+  Accordion,
+  Button,
+  } from 'react-bootstrap';
+  import TablePrices from './TablePrices';
+
+
 
 const drawerWidth = 240;
 
@@ -97,27 +105,48 @@ export default function Main(props) {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
-        <Toolbar className={classes.toolbar}>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="Open drawer"
-            onClick={handleDrawerOpen}
-            className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-            Dashboard
-          </Typography>
-          <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+      <Accordion>
+        <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
+          <Toolbar className={classes.toolbar}>
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="Open drawer"
+              onClick={handleDrawerOpen}
+              className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+              Dashboard
+            </Typography>
+
+            
+              <Accordion.Toggle as={Button} eventKey="0" style={{alignSelf: 'flex-end'}}>
+                <Typography component="h6" color="white" noWrap className={classes.title}>
+                  USD
+                  <svg style={{"width":"24px","height":"24px","viewBox":"0 0 24 24"}}>
+                    < path fill="#ffffff" d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
+                  </svg> 262
+                </Typography>
+              </Accordion.Toggle>
+
+
+
+            <IconButton color="inherit">
+              <Badge badgeContent={4} color="secondary">
+                <NotificationsIcon />
+              </Badge>
+
+            </IconButton>
+
+          </Toolbar>
+          <Accordion.Collapse eventKey="0" style={{maxHeight: "200px", overflowY: "scroll"}}>
+              <TablePrices/>
+            </Accordion.Collapse>
+        </AppBar>
+        
+      </Accordion>
       <Sidebar open={open} setOpen={handleDrawerClose} onClick={handleOnClick}></Sidebar>
       <div className={classes.childContainer}>
         {props.children}
